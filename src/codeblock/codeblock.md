@@ -173,9 +173,7 @@ class BBB extends AAA
 }
 ```
 
-![image-20230414212106371](C:\Users\24564\AppData\Roaming\Typora\typora-user-images\image-20230414212106371.png)
-
-
+![image-20230414212059854](codeblock.assets/image-20230414212059854.png)
 
 
 
