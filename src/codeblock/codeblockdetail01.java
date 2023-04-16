@@ -1,7 +1,6 @@
 package codeblock;
 
 
-
 public class codeblockdetail01 {
     public static void main(String[] args) {
         //AA aa2 = new AA();
