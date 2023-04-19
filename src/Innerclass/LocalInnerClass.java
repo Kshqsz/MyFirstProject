@@ -5,9 +5,9 @@ package Innerclass;
  */
 public class LocalInnerClass {
     public static void main(String[] args) {
+        //6.外部其他类不能访问局部内部类(因为 局部内部类的地位是一个局部变量)
         Outer02 outer02 = new Outer02();
         outer02.m1();
-
     }
 }
 
@@ -26,13 +26,16 @@ class Outer02
         final class Inner02
         {//局部内部类
             //2.可以直接访问外部类的所有成员，包含私有的
+            private int n1 = 800;
             public void f1() {
-                //局部内部类可以直接访问外部类的成员，比如下面 外部类的n1 和 m2()方法
-                System.out.println("n1=" + n1);
+                //5.局部内部类可以直接访问外部类的成员，比如下面 外部类的n1 和 m2()方法
+                //7.如果外部类和局部内部类的成员重名时，默认遵循就近原则
+                // 如果想访问外部类的成员，使用(外部类名.this.成员)
+                // Outer02.this 本质就是外部类的对象,即哪个对象调用了m1，Outer02.this就是哪个对象
+                System.out.println("n1=" + n1 + "外部类的n1 = " + Outer02.this.n1 );
                 m2();
             }
         //class Inner03 extends Inner02 //如果Inner02用final修饰了则不能继承，如果没有则可以继承
-
         }
         //6.外部类在方法中可以创建Inner02对象，然后调用方法即可
         Inner02 inner02 = new Inner02();
