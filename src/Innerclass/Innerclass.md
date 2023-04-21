@@ -343,3 +343,46 @@ class CellPhone //类
 
 
 
+# 成员内部类
+
+## 成员内部类01
+
+```java
+package Innerclass ;
+
+public class MemberInnerClass01 {
+    public static void main(String[] args) {
+        Outer08 outer08 = new Outer08();
+        outer08.t1();
+
+    }
+}
+
+class Outer08 //外部类
+{
+    private int n1 = 10;
+    public String name = "张三";
+    //1.注意：成员内部类是定义在外部类内的成员位置上
+    //2.可以添加任意访问修饰符(public protected 默认 private) 因为它的地位就是一个成员
+    class Inner08 // 成员内部类
+    {
+        public void say()
+        {
+            //可以直接访问外部类的所有成员，包含私有的
+            System.out.println("n1 = " + n1 + " name = " + name );
+        }
+    }
+
+    //写方法
+    public void t1()
+    {
+        Inner08 inner08 = new Inner08();
+        inner08.say();
+    }
+}
+```
+
+
+
+
+
