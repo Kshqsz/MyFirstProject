@@ -348,7 +348,7 @@ class CellPhone //类
 ## 成员内部类01
 
 ```java
-package Innerclass;
+package Innerclass ;
 
 public class MemberInnerClass01 {
     public static void main(String[] args) {
