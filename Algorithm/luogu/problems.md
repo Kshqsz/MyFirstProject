@@ -346,3 +346,73 @@ int main()
 }
 ```
 
+
+
+### P1883
+
+![image-20230502225722110](problems.assets/image-20230502225722110.png)
+
+
+
+
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 1e4 + 10;
+const double eps = 1e-11;
+int a[N],b[N],c[N];
+int n;
+
+double f(double x,int i)
+{
+    return x * x * a[i] + x * b[i] + c[i];
+}
+double check(double x)
+{
+    double ans = f(x,1);
+    for (int i = 2; i <= n; i++)
+    {
+        ans = max(ans,f(x,i)); // F(x) 求的就是若干个f(x)最小值的最大值
+    }
+    return ans;
+}
+void solve()
+{
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> a[i] >> b[i] >> c[i];
+    }
+
+    double l = 0, r = 1000, mid1 ,mid2;
+
+    while (r - l > eps)
+    {
+        mid1 = l + (r - l) / 3;
+        mid2 = r - (r - l) / 3;
+        if (check(mid1) > check(mid2)) l = mid1;
+        else r = mid2;
+    }
+
+    cout << fixed << setprecision(4) << check(l) << endl;
+
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        solve(); 
+    }   
+    return 0;
+}
+```
+
