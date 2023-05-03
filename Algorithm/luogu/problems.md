@@ -416,3 +416,174 @@ int main()
 }
 ```
 
+
+
+
+
+## 倍增法
+
+### P4155
+
+![image-20230503142457835](problems.assets/image-20230503142457835.png)
+
+
+
+```c++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 4e5 + 10;
+int n, m;
+
+struct warrior
+{
+    int id,L,R;
+
+}w[N * 2];
+
+bool cmp(warrior w1,warrior w2)
+{
+    return w1.L < w2.L;
+}
+
+int n2;
+int go[N][20];
+int res[N];
+
+void init()
+{
+    int next = 1;
+    for (int i = 1; i <= n2; i++)
+    {
+        while (next <= n2 && w[next].L <= w[i].R) next++;
+        go[i][0] = next - 1; 
+    }
+
+    for (int i = 1; (1 << i) <= n; i++)
+    {
+        for (int s = 1; s <= n2; s++)
+        {
+            go[s][i] = go[go[s][i - 1]][i - 1];
+        }
+    }
+}
+
+void getans(int x)
+{
+    int len = w[x].L + m, cur = x, ans = 1;
+    for (int i = __lg(N); i >= 0; i--)
+    {
+        int pos = go[cur][i];
+        if (pos && w[pos].R < len)
+        {
+            ans += 1 << i;
+            cur = pos;
+        }
+    }
+    res[w[x].id] = ans + 1;
+}
+void solve()
+{
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+    {
+        w[i].id = i;
+        cin >> w[i].L >> w[i].R;
+        if (w[i].R < w[i].L) w[i].R += m;
+    }
+    sort(w + 1, w + n + 1,cmp);
+
+    n2 = n;
+    for (int i = 1; i <= n; i++)
+    {
+        n2++;
+        w[n2] = w[i], w[n2].L = w[i].L + m, w[n2].R = w[i].R + m;
+    }
+    init();
+    for (int i = 1; i <= n; i++) getans(i);
+    for (int i = 1; i <= n; i++) cout << res[i] << " ";
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
+## ST算法
+
+### P2880
+
+![image-20230503172257775](problems.assets/image-20230503172257775.png)
+
+```c++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 50010;
+int n,m;
+int a[N],dp_max[N][22],dp_min[N][21];
+
+int query(int l,int r)
+{
+    int k = __lg(r - l + 1);
+    int x = max(dp_max[l][k], dp_max[r - (1 << k) + 1][k]);
+    int y = min(dp_min[l][k], dp_min[r - (1 << k) + 1][k]);
+    return x - y;
+}
+void init()
+{
+    for (int i = 1; i <= n; i++)
+    {
+        dp_max[i][0] = a[i];
+        dp_min[i][0] = a[i];
+    }
+
+    int p = __lg(n);
+
+    for (int k = 1; k <= p; k++)
+    {
+        for (int s = 1; s + (1 << k) <= n + 1; s++)
+        {
+            dp_max[s][k] = max(dp_max[s][k - 1], dp_max[s + (1 << (k - 1))][k - 1]);
+            dp_min[s][k] = min(dp_min[s][k - 1], dp_min[s + (1 << (k - 1))][k - 1]);
+        }
+    }
+}
+void solve()
+{
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    init();
+    
+    for (int i = 1; i <= m; i++)
+    {
+        int l, r;
+        cin >> l >> r;
+        cout << query(l,r) << endl;
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+
+```
+
+
+
+
+
