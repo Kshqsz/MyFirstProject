@@ -1,3 +1,196 @@
+# 基本数据结构
+
+## 二叉树
+
+### P1087
+
+![image-20230504222430016](problems.assets/image-20230504222430016.png)
+
+
+
+ ```C++
+ #include <bits/stdc++.h>
+ #define endl "\n"
+ 
+ using namespace std;
+ typedef pair<int,int> pii;
+ 
+ int n;
+ string s;
+ void make(int l,int r)
+ {
+     int mid = l + r >> 1;
+     if (l != r) //长度不为1
+     {
+         make(l,mid);
+         make(mid + 1,r);
+     }
+     int a = 0, b = 0;
+     for (int i = l; i <= r; i++)
+     {
+         if (s[i] == '0') a++;
+         else b++;
+     }
+     if (a && b) cout << "F";
+     else if (a) cout << "B";
+     else cout << "I";
+ }
+ void solve()
+ {
+     cin >> n;
+     cin >> s;
+     s = ' ' + s;
+     make(1, 1 << n);
+ }
+ int main()
+ {
+     ios::sync_with_stdio(false);
+     cin.tie(0),cout.tie(0);
+     
+     solve();    
+     return 0;
+ }
+ ```
+
+
+
+
+
+### p1030
+
+![image-20230504224605876](problems.assets/image-20230504224605876.png)
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+
+
+void pre(string in,string post)
+{
+    if (in.size() > 0)
+    {
+        char root = post[post.size() - 1];
+        cout << root;
+        int k = in.find(root);
+        pre(in.substr(0,k),post.substr(0,k)); //递归左子树
+        pre(in.substr(k + 1),post.substr(k,in.size() - k - 1)); // 递归右子树
+    }
+}
+void solve()
+{
+    string in, post;
+    cin >> in >> post;
+    pre(in, post);
+    cout << endl;
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
+### P1305
+
+![image-20230504230644058](problems.assets/image-20230504230644058.png)
+
+
+
+
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 1 << 26;
+struct Node
+{
+    char value,lson,rson;
+}tree[N];
+int n;
+string s;
+char root;
+
+void pre(char node)
+{
+    cout << node;
+    if (tree[node].lson != '*') pre(tree[node].lson);
+    if (tree[node].rson != '*') pre(tree[node].rson);
+}
+void solve()
+{
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> s;
+        if (i == 1) root = s[0];
+        tree[s[0]].lson = s[1], tree[s[0]].rson = s[2];
+    }
+    pre(root);
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
+### P1229
+
+![image-20230504232316701](problems.assets/image-20230504232316701.png)
+
+
+
+
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+
+void solve()
+{
+    string s1, s2;
+    cin >> s1 >> s2;
+    int ans = 0;
+    for (int i = 0; i < s1.size(); i++)
+    {
+        for (int j = 1; j < s2.size(); j++)
+        {
+            if (s1[i] == s2[j] && s1[i + 1] == s2[j - 1]) ans++;
+        }
+    }   
+    cout << (1 << ans) << endl;
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
 # 基本算法
 
 ## 二分
