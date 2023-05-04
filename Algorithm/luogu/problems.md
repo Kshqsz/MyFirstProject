@@ -585,5 +585,264 @@ int main()
 
 
 
+## 排列与排序
 
+### P1093
+
+![image-20230503175858079](problems.assets/image-20230503175858079.png)
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+struct stu
+{
+    int id;
+    int c,m,e;
+    int sum;
+}st[310];
+
+bool cmp(stu a,stu b)
+{
+    if (a.sum > b.sum) return true;
+    else if (a.sum < b.sum) return false;
+    else
+    {
+        if (a.c > b.c) return true;
+        else if (a.c < b.c) return false;
+        else
+        {
+            if (a.id < b.id) return true;
+            else return false;
+        } 
+    }
+}
+
+void solve()
+{
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> st[i].c >> st[i].m >> st[i].e;
+        st[i].sum = st[i].c + st[i].m + st[i].e;
+        st[i].id = i;
+    }
+    sort(st + 1, st + n + 1,cmp);
+    for (int i = 1; i <= 5; i++)
+    {
+        cout << st[i].id << " " << st[i].sum <<endl;
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
+# 搜索
+
+## DFS
+
+### P1019
+
+![image-20230504170925418](problems.assets/image-20230504170925418.png)
+
+
+
+
+
+```c++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 30;
+int n, ans;
+string s[N];
+int use[N];
+
+int check(string str1,string str2)
+{
+    int n1 = str1.size();
+    int n2 = str2.size();
+    for (int i = 1; i < min(n1, n2); i++)
+    {
+        int flag = 1;
+        for (int j = 0; j < i; j++)
+        {
+            if (str1[n1 - i + j] != str2[j]) flag = 0;
+        }
+        if (flag) return i;
+    }
+    return 0;
+}
+void dfs(string str,int len)
+{
+    ans = max(ans, len);
+    for (int i = 0; i < n; i++)
+    {
+        if (use[i] >= 2) continue;
+        int c = check(str,s[i]);
+        if (c > 0)
+        {
+            use[i]++;
+            dfs(s[i], len + s[i].size() - c);
+            use[i]--;
+        }
+    }
+}
+void solve()
+{
+    cin >> n;
+    for (int i = 0; i <= n; i++) cin >> s[i];
+    dfs(' '+ s[n],1);
+    cout << ans << endl;
+
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+### P5194
+
+![image-20230504181942837](problems.assets/image-20230504181942837.png)
+
+
+
+
+
+```c++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 55;
+long long a[N], sum[N];
+long long n, c, ans;
+
+void dfs(int cur, long long res)
+{
+    if (res > c) return;
+    if (res + sum[cur - 1] <= c)
+    {
+        ans = max(ans, res + sum[cur - 1]);
+        return;
+    }
+    ans = max(ans, res);
+    for (int i = 1; i <= cur - 1; i++) dfs(i, res + a[i]);
+}
+void solve()
+{
+    cin >> n >> c;
+
+    for (int i = 1; i <= n; i++) cin >> a[i];
+    for (int i = 1; i <= n; i++) sum[i] = sum[i - 1] + a[i];
+    dfs(n + 1,0);
+    cout << ans << endl;
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
+### P1378
+
+![image-20230504195203889](problems.assets/image-20230504195203889.png)
+
+
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 10;
+const double PI = acos(-1);
+int st[N];
+double x[N], y[N], r[N], xa, ya, xb, yb, ans;
+int n;
+
+double cal(int i)
+{
+    double x1 = min(abs(x[i] - xa), abs(x[i] - xb));
+    double y1 = min(abs(y[i] - ya), abs(y[i] - yb));
+    double ans_r = min(x1, y1);
+
+    for (int j = 1; j <= n; j++)
+    {
+        if (i != j && st[j])
+        {
+            double d = sqrt((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]));
+            ans_r = min(ans_r, max(d - r[j], 0.0));
+        }
+
+    }
+    return ans_r;
+}
+void dfs(int u, double sum)
+{
+    if (u > n)
+    {
+        ans = max(ans, sum);
+        return;
+    }
+    for (int i = 1; i <= n; i++)
+    {
+        if (!st[i])
+        {
+            r[i] = cal(i);
+            st[i] = 1;
+            dfs(u + 1, sum + r[i] * r[i] * PI);
+            st[i] = 0;
+        }
+    }
+}
+void solve()
+{
+    cin >> n;
+    cin >> xa >> ya >> xb >> yb;
+    int area = abs(xa - xb) * abs(ya - yb);
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> x[i] >> y[i];
+    }
+
+    dfs(1, 0);
+
+    cout << fixed << setprecision(0) << double (area) - ans << endl;
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
 
