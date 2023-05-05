@@ -191,7 +191,151 @@ int main()
 
 
 
+
+
+### P5018
+
+![image-20230505110537214](problems.assets/image-20230505110537214.png)
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+
+const int N = 1e6 + 10;
+bool flag;
+
+struct Node
+{
+    int value;
+    int lson, rson;
+}tree[N];
+
+int dfs(int x,int y, int s)
+{
+    if (x == -1 && y == -1) return 0;
+    if (x == -1 || y == -1 && x != y)
+    {
+        flag = 1;
+        return 0;
+    }
+    if (tree[x].value != tree[y].value)
+    {
+        flag = 1;
+        return 0;
+    }
+    return dfs(tree[x].lson, tree[y].rson, 2) + dfs(tree[x].rson, tree[y].lson, 2) + s;
+}
+void solve()
+{
+    int n; cin >> n;
+    int ans = 1;
+    for (int i = 1; i <= n; i++) cin >> tree[i].value;
+    for (int i = 1; i <= n; i++) cin >> tree[i].lson >> tree[i].rson;
+    for (int i = 1; i <= n; i++)
+    {
+        int s = dfs(tree[i].lson, tree[i].rson, 3);
+        if (!flag) ans = max(ans, s);
+        flag = 0;
+    }
+    cout << ans << endl;
+
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
+
+
+
+
+
+
+### p2168
+
+![image-20230505125154725](problems.assets/image-20230505125154725.png)
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+
+
+struct Tree
+{
+    long long w,h;
+    bool operator < (const Tree & x) const
+    {
+        if (w != x.w) return w > x.w; //升序
+        return h > x.h;
+    }
+};
+
+priority_queue<Tree> q;
+
+void solve()
+{
+    long long n, k;
+    cin >> n >> k;
+    for (int i = 1; i <= n; i++)
+    {
+        long long x;
+        cin >> x;
+        q.push((Tree){x,1});
+    }
+    if ((n - 1) % (k - 1) != 0)
+    {
+        for (int i = 1; i <= k - 1 - ((n - 1) % (k - 1)); i++) q.push((Tree){0,1});
+    }
+    long long ans = 0;
+    long long top = 0;
+
+    while (q.size() > 1)
+    {
+        long long sum = 0;
+        long long h = 0;
+        for (int i = 1; i <= k; i++)
+        {
+            sum += q.top().w;
+            h = max(q.top().h, h);
+            q.pop();
+        }
+        q.push((Tree){sum, h + 1});
+        ans += sum;
+        top = max(h, top);
+    }
+    cout << ans << endl;
+    cout << top  << endl;
+
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+
+    solve();
+
+    return 0;
+}
+```
+
+
+
 # 基本算法
+
+
 
 ## 二分
 
