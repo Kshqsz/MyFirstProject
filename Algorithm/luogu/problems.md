@@ -1335,7 +1335,7 @@ int main()
 }
 ```
 
-P1443
+### P1443
 
 ![image-20230505142841154](problems.assets/image-20230505142841154.png)
 
@@ -1363,13 +1363,12 @@ void bfs(int x,int y)
         pii t= q.front();
         q.pop();
         cnt = (mp[t.first][t.second] == -1 ? 0 : mp[t.first][t.second]);
-        cnt++;
         for (int i = 0; i < 8; i++)
         {
             int nx = t.first + d[i][0], ny = t.second + d[i][1];
             if (!st[nx][ny] && nx >= 1 && ny <= m && nx <=n && ny >= 1)
             {
-                mp[nx][ny] = cnt;
+                mp[nx][ny] = cnt + 1;
                 st[nx][ny] = 1;
                 q.push({nx,ny});
             }
