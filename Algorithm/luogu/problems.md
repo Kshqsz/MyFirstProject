@@ -1183,3 +1183,221 @@ int main()
 }
 ```
 
+
+
+### P1162
+
+![image-20230505134639942](problems.assets/image-20230505134639942.png)
+
+
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+int mp[35][35], st[35][35];
+int d[4][2] = {{0,1},{0,-1},{1,0},{-1,0}};
+int n;
+void dfs(int x, int y)
+{
+    if (x < 0 || x > n + 1 || y <0 || y > n + 1 || st[x][y] != 0) return;
+    st[x][y] = 1;
+    for (int i = 0; i < 4; i++) dfs(x + d[i][0], y + d[i][1]);
+}
+void solve()
+{
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            cin >> mp[i][j];
+            if (mp[i][j] == 0) st[i][j] = 0;
+            else st[i][j] = 1; 
+        }
+    }
+
+    dfs(0, 0);
+
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (st[i][j] == 0) cout << 2 << " ";
+            else cout << mp[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
+## BFS
+
+### P1162
+
+![image-20230505134722136](problems.assets/image-20230505134722136.png)
+
+
+
+```c++
+//从边界往里面bfs 如果进不去就标记为1 即不是闭合的
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 35;
+int mp[N][N];
+int st[N][N];
+int n;
+int d[4][2] = {{0,1},{0,-1},{1,0},{-1,0}};
+
+queue<pii> q;
+
+void bfs(int x,int y)
+{
+    st[x][y] = 1;
+    q.push({x,y});
+    while (q.size())
+    {
+        pii t = q.front();
+        q.pop();
+        for (int i = 0; i < 4; i++)
+        {
+            int nx = t.first + d[i][0], ny = t.second + d[i][1];
+            if (mp[nx][ny] == 0 && nx != n + 1 && nx != 0 && ny != n + 1 && ny != 0 && !st[nx][ny])
+            {
+                st[nx][ny] = 1;
+                q.push({nx,ny});
+            }
+        }
+    }
+}
+void solve()
+{
+    cin >> n;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            cin >> mp[i][j];
+            if (mp[i][j] == 1) st[i][j] = 1;
+        }
+    }
+
+    for (int i = 1; i <= n; i = i + n - 1)
+    {
+        for (int  j = 1; j <= n; j++)
+        {
+            if (st[i][j] == 1) continue;
+            bfs(i,j);
+        }
+    }
+
+    for (int j = 1; j <= n; j = j + n - 1)
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            if (st[i][j] == 1) continue;
+            bfs(i,j);
+        }
+    }
+
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= n; j++)
+        {
+            if (!st[i][j]) cout << 2 << " ";
+            else cout << mp[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+P1443
+
+![image-20230505142841154](problems.assets/image-20230505142841154.png)
+
+
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 410;
+int mp[N][N];
+int st[N][N];
+int n,m;
+int g,z;
+int cnt = 0;
+int d[8][2] = {{1,2},{2,1},{-1,2},{-2,1},{1,-2},{2,-1},{-1,-2},{-2,-1}};
+queue<pii> q;
+void bfs(int x,int y)
+{
+    q.push({x,y});
+    while (q.size())
+    {
+        pii t= q.front();
+        q.pop();
+        cnt = (mp[t.first][t.second] == -1 ? 0 : mp[t.first][t.second]);
+        cnt++;
+        for (int i = 0; i < 8; i++)
+        {
+            int nx = t.first + d[i][0], ny = t.second + d[i][1];
+            if (!st[nx][ny] && nx >= 1 && ny <= m && nx <=n && ny >= 1)
+            {
+                mp[nx][ny] = cnt;
+                st[nx][ny] = 1;
+                q.push({nx,ny});
+            }
+        }
+    }
+}
+void solve()
+{
+    memset(mp,-1,sizeof mp);
+    cin >> n >> m >> g >> z;
+    bfs(g, z);
+    mp[g][z] = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= m; j++)
+        {
+            cout << mp[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
