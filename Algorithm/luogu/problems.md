@@ -1241,6 +1241,99 @@ int main()
 }
 ```
 
+### P3956
+
+![image-20230509213129958](problems.assets/image-20230509213129958.png)
+
+
+
+
+
+![image-20230509213242146](problems.assets/image-20230509213242146.png)
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+const int N = 110;
+int d[4][2] = {{0,1},{0,-1},{1,0},{-1,0}};
+int best[N][N];
+int res = 0x3f3f3f3f;
+int mp[N][N];
+int st[N][N];
+int m, n;
+int a, b, c;
+bool ok (int x,int y)
+{
+    return (x >= 1 && x <= m && y >= 1 && y <= m);
+}
+void dfs(int x, int y, int color, int cost)
+{
+    if (x == m && y == m)
+    {
+        res = min(res, cost);
+        return;
+    }
+    for (int i = 0; i < 4; i++)
+    {
+        int nx = x + d[i][0], ny = y + d[i][1];
+        if (!ok(nx,ny) || (mp[x][y] == -1 && mp[nx][ny] == -1) || st[nx][ny]) continue;
+        if (mp[nx][ny] != -1)
+        {
+            if (mp[nx][ny] == color && cost < best[nx][ny] && cost < res)
+            {
+                st[nx][ny] = 1;
+                best[nx][ny] = cost;
+                dfs(nx,ny,mp[nx][ny],cost);
+                st[nx][ny] = 0;
+            }
+            else if (mp[nx][ny] != color && cost + 1 < best[nx][ny] && cost + 1 < res)
+            {
+                st[nx][ny] = 1;
+                best[nx][ny] = cost + 1;
+                dfs(nx,ny,mp[nx][ny],cost + 1);
+                st[nx][ny] = 0;
+            }
+        }
+        else
+        {
+            if (mp[nx][ny] == -1 && cost + 2 < best[nx][ny] && cost + 2 < res)
+            {
+                st[nx][ny] = 1;
+                best[nx][ny] = cost + 2;
+                dfs(nx,ny,color,cost + 2);
+                st[nx][ny] = 0;
+            }
+        }
+    }
+}
+void solve()
+{
+    cin >> m >> n;
+    memset(best,0x3f,sizeof best);
+    memset(mp,-1,sizeof mp);
+    st[1][1] = 1;
+    best[1][1] = 0;
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> a >> b >> c;
+        mp[a][b] = c;
+    }
+    dfs(1,1,mp[1][1],0);
+    cout << (res == 0x3f3f3f3f ? -1 : res) << endl;
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
 
 
 ## BFS
