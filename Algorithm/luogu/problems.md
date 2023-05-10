@@ -1493,3 +1493,181 @@ int main()
 }
 ```
 
+### P1126
+
+![image-20230510211336344](problems.assets/image-20230510211336344.png)
+
+
+
+
+
+![image-20230510211620162](problems.assets/image-20230510211620162.png)
+
+
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<pair<int,int>,char> pii;
+
+const int N = 55;
+int mp[N][N];
+int n, m;
+int st[N][N][N];
+int d[4][2] = {{-1,0},{0,1},{1,0},{0,-1}};
+int res = 0x3f3f3f3f;
+string s = "NESW";
+struct node
+{
+    int x, y;
+    int dir;
+    int time;
+};
+
+node beginn,endd;
+
+bool ok(int x,int y)
+{
+    //机器人有大小 不能在最后一格 因为位置不够了
+    return x >= 1 && y >= 1 && x < n && y < m && mp[x + 1][y] == 0 && mp[x + 1][y + 1] == 0 && mp[x][y + 1] == 0 && mp[x][y] == 0;
+}
+void bfs()
+{
+    queue<node> q;
+    q.push(beginn);
+    while (q.size())
+    {
+        auto t = q.front();
+        q.pop();
+        int x = t.x, y = t.y, dir = t.dir;
+        if (x == endd.x && y == endd.y)
+        {
+            res = t.time;
+            return;
+        }
+        if (st[x][y][dir]) continue;
+        st[x][y][dir] = 1;
+        t.time ++;
+        t.dir = (dir + 3) % 4;
+        q.push(t);
+        t.dir = (dir + 5) % 4;
+        q.push(t);
+        t.dir = dir;
+        for (int i = 1; i <= 3; i++)
+        {
+            int nx = x + d[dir][0] * i;
+            int ny = y + d[dir][1] * i;
+            if (!ok(nx,ny)) break;
+            t.x = nx;
+            t.y = ny;
+            q.push(t);
+        }
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    cin >> n >> m;
+    for (int i = 1; i <= n; i++)
+        for (int j = 1; j <= m; j++)
+            cin >> mp[i][j];
+    char c;
+    cin >> beginn.x >> beginn.y;
+    cin >> endd.x >> endd.y;
+    cin >> c;
+    beginn.dir = s.find(c);
+    bfs();
+    cout << (res == 0x3f3f3f3f ? -1 : res) << endl;
+    return 0;
+}
+```
+
+
+
+
+
+## BFS 与双端队列
+
+### P4667
+
+
+
+![image-20230510222002183](problems.assets/image-20230510222002183.png)
+
+
+
+
+
+```C++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+
+int dir[4][2] = {{-1,-1},{1,-1},{-1,1},{1,1}};
+int ab[4] = {2,1,1,2};
+int cd[4][2] = {{-1,-1},{0,-1},{-1,0},{0,0}};
+int mp[505][505], dis[505][505];
+struct p
+{
+    int x,y;
+    int dis;
+};
+int n,m;
+// int read_ch()
+// {
+//     char c;
+//     while ((c = getchar())!= '/' && c != '\\');
+//     return c == '/' ? 1 : 2;
+// }
+void solve()
+{
+    cin >> n >> m;
+    memset(dis,0x3f,sizeof dis);
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 1; j <= m; j++)
+        {
+            char c;
+            cin >> c;
+            mp[i][j] = (c == '/' ? 1 : 2);
+        }
+    }
+
+    deque<p> de;
+    de.push_back({1,1,0});
+    dis[1][1] = 0;
+    while (de.size())
+    {
+        auto now = de.front();
+        de.pop_front();
+        for (int i = 0; i < 4; i++)
+        {
+            int nx = now.x + dir[i][0], ny = now.y + dir[i][1];
+            int d = 0;
+            d = mp[now.x + cd[i][0]][now.y + cd[i][1]] != ab[i];
+            if (nx >= 1 && ny >= 1 && nx <= n+ 1 && ny <= m + 1 && dis[nx][ny] > dis[now.x][now.y] + d)
+            {
+                dis[nx][ny] = dis[now.x][now.y] + d;
+                if (d == 0) de.push_front({nx,ny,dis[nx][ny]});
+                else de.push_back({nx,ny,dis[nx][ny]});
+                if (nx == n + 1 && ny == m + 1) break;
+            }
+        }
+    }
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    solve();
+    if (dis[n + 1][m + 1] != 0x3f3f3f3f) cout << dis[n + 1][m + 1];
+    else cout << "NO SOLUTION";    
+    return 0;
+}
+```
+
