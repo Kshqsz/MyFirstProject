@@ -1671,3 +1671,204 @@ int main()
 }
 ```
 
+
+
+
+
+# 高级数据结构
+
+## 并查集
+
+### P1111
+
+![image-20230511212737115](problems.assets/image-20230511212737115.png)
+
+
+
+
+
+```c++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+
+const int N = 1e3 + 10;
+int n, m;
+int cnt;
+int x, y, t;
+int fa[N];
+
+struct edge
+{
+    int x,y,t;    
+};
+vector<edge> v;
+bool cmp(edge a,edge b)
+{
+    return a.t < b.t;
+}
+
+void init()
+{
+    for (int i = 1;i <= n; i++) fa[i] = i;
+}
+
+int find(int x)
+{
+    if (x != fa[x]) fa[x] = find(fa[x]);
+    return fa[x];
+}
+//每次只合并两个 没合并一次size - 1 以此来记录最后有几个集合
+void merge(int x, int y)
+{
+    x = find(x), y = find(y);
+    if (x != y)
+    {
+        fa[x] = fa[y];
+        cnt--;
+    }
+}
+
+void solve()
+{
+    cin >> n >> m;
+    cnt = n;
+    init();
+    for (int i = 1; i <= m; i++)
+    {
+        cin >> x >> y >> t;
+        v.push_back({x,y,t});
+    }      
+    sort(v.begin(),v.end(),cmp);
+    for (int i = 0; i < m; i++)
+    {
+        merge(v[i].x, v[i].y);
+        if (cnt == 1)
+        {
+            cout << v[i].t << endl;
+            return;
+        }
+    }
+    cout << -1 << endl;
+} 
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    solve();    
+    return 0;
+}
+```
+
+
+
+### P3958
+
+![image-20230511221321366](problems.assets/image-20230511221321366.png)
+
+```c++
+#include <bits/stdc++.h>
+#define endl "\n"
+
+using namespace std;
+typedef pair<int,int> pii;
+
+const int N = 1010;
+long long n, h ,r;
+long long cntdown, cntup;
+struct coordinate
+{
+    long long x;
+    long long y;
+    long long z;
+}cd[N];
+long long down[N],up[N];
+long long dis(long long x1,long long x2,long long y1,long long y2,long long z1,long long z2)
+{
+    return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 -z2);
+}
+int fa[N];
+int flag;
+void init()
+{
+    for (int i = 1; i <= n; i++)
+    {
+        fa[i] = i;
+        down[i] = 0;
+        up[i] = 0;
+    }
+    cntdown = 0;
+    cntup = 0;
+    flag = 0;
+}
+int find(int x)
+{
+    if (x != fa[x]) fa[x] = find(fa[x]);
+    return fa[x];
+}
+void merge(int x,int y)
+{
+    x = find(x), y = find(y);
+    if (x != y) fa[x] = fa[y];
+}
+void solve()
+{
+    cin >> n >> h >> r;
+    init();
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> cd[i].x >> cd[i].y >> cd[i].z;
+        if (cd[i].z + r >= h)
+        {
+            cntup++;
+            up[cntup] = i;
+        }
+        if (cd[i].z - r <= 0)
+        {
+            cntdown++;
+            down[cntdown] = i;
+        }
+        for (int k = 1; k < i; k++)
+        {
+            if ((cd[k].x - cd[i].x) * (cd[k].x - cd[i].x) + (cd[i].y - cd[k].y) *(cd[i].y - cd[k].y)) > 4 * r * r) continue;
+            if (dis(cd[i].x, cd[k].x, cd[i].y, cd[k].y, cd[i].z, cd[k].z) <= 4 * r * r)
+            {
+                merge(i,k);
+            }
+        }
+    }
+    for (int j = 1; j <= cntdown; j++)
+    {
+        for (int k = 1; k <= cntup; k++)
+        {
+            if (find(down[j]) == find(up[k]))
+            {
+                flag = 1;
+                break;
+            }
+        }
+    }
+    if (flag) cout << "Yes" << endl;
+    else cout << "No" << endl;
+
+}
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(0),cout.tie(0);
+    
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        solve();   
+    } 
+    return 0;
+}
+```
+
+
+
